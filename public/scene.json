@@ -1,0 +1,41 @@
+{
+	"world-center": {
+		"align": [0.5, 0.5, 0.0],
+		"mountPoint": [0.5, 0.5, 0.5],
+		"origin": [0.5, 0.5, 0.5],
+		"sizeMode": ["absolute", "absolute", "absolute"],
+		"absoluteSize": [5000, 5000, 5000],
+		"rotation": [-0.6283, 0, 0],
+		"children": {
+			"room": {
+				"align": [0.5, 1.28, 0.5],
+				"mountPoint": [0.5, 1, 0.5],
+				"children": {
+					"room-mesh": {},
+					"room-screen": {
+						"align": [0.5, 0.6, 0.14],
+						"mountPoint": [0.5, 1.0, 0.5],
+						"proportionalSize": [0.4, 0.2, 0],
+						"origin": [0.5, 0.5, 0.5]
+					},
+					"room-light": {
+						"align": [0.5, 0.5, 0.5],
+						"proportionalSize": [0.1, 0.1, 0.1]
+					}
+				}
+			}
+		}
+	},
+	"character": {
+		"mountPoint": [0.5, 0, 0.5],
+		"align": [0.5, 1, 0.5],
+		"proportionalSize": [0.03, 0.03, 0.03],
+		"mountPoint": [0.5, 1, 0.5],
+		"origin": [0.5, 0.5, 0.5],
+		"children": {
+			"camera": {
+				"align": [0.5, 0, 0.5]
+			}
+		}
+	}
+}

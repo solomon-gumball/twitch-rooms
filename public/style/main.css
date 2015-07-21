@@ -1,0 +1,78 @@
+html body {
+	font-family: courier;
+	background-color: black;
+}
+
+div.chat-window {
+	overflow: auto;
+	background-color: dark-gray;
+	z-index: -1999;
+}
+
+.character-label {
+	color: white;
+	font-size: 10px;
+	text-align: center;
+	font-family: courier;
+	background: black;
+	line-height: 16px;
+	border: 2px;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+
+.chat-input {
+	background-color: white;
+}
+
+.chat-bubble {
+	border-radius: 15px;
+	background-color: white;
+	font-size: 15px;
+	color: black;
+	font-family: Courier;
+}
+
+#player-name {
+	color: red;
+	font-weight: bold;
+	height: 100%;
+	font-family: Courier !important;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+#chat input {
+	border: none;
+	background-color: rgba(0, 0, 0, 0);
+	outline-width: 0px;
+	height: 100%;
+	color: white;
+	font-family: Courier !important;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+div#chat {
+	position: absolute;
+	width: 100%;
+	height: 40px;
+	bottom: 0%;
+	left: 0%;
+	z-index: 100;
+	padding: 10px;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+div.chat-comment {
+	padding: 30px;
+	z-index: 1000;
+	color: white;
+	font-size: 60px;
+}
+
+span.player-name {
+	color: red;
+	font-weight: bold;
+}
