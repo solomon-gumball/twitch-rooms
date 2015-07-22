@@ -94,6 +94,7 @@ export class Player extends Character {
 		}
 
 		this.chatStatus = false;
+		this.labelNode.setAbsoluteSize(0, 0, 0);
 	}
 
 	toggleMove() {

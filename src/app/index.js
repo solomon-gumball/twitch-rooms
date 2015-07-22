@@ -55,7 +55,7 @@ export default function initialize(collection) {
 		*/
 
 		var cameraNode = playerNode.addChild()
-			.setAlign(0.5, 0, 0.5)
+			.setAlign(0.5, -2.3, 0.9)
 
 		var camera = new Camera(cameraNode);
 			camera.setDepth(1000);

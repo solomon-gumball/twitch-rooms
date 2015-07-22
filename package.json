@@ -8,7 +8,8 @@
     "watch-all": "npm run watch-client & npm run watch-server"
   },
   "dependencies": {
-    "famous": "git+ssh://git@github.com:Famous/mixed-mode.git#develop"
+    "famous": "git+ssh://git@github.com:Famous/mixed-mode.git#develop",
+    "gl-matrix": "^2.3.1"
   },
   "devDependencies": {
     "browserify": "^10.0.0",

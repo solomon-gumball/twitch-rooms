@@ -97,7 +97,7 @@ function Screen (node) {
 	// 		// width: 620,
 	// 		height: 600,
 	// 		width: 1100,
-	// 		src: "http://www.twitch.tv/gsl/embed"
+	// 		src: "http://www.twitch.tv/pokernighttv/embed"
 	// 	},
 	// 	properties: {
 	// 		pointerEvents: 'none'

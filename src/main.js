@@ -35,7 +35,8 @@ AssetLoader.load(
 	{
 		fromURL: [
 			'obj/room2.obj',
-			'obj/character2.obj'
+			'obj/character2.obj',
+			'obj/character.json'
 		]
 	}
 )
