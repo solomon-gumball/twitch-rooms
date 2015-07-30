@@ -19,6 +19,7 @@ export class Character extends EventEmitter {
 		this.node = node;
 		this.meshNode = node.addChild();
 		this.ID = options.ID;
+		this.name = options.name;
 		this.position = options.position;
 		this.rotation = options.rotation;
 
@@ -131,10 +132,10 @@ export class Character extends EventEmitter {
 				size[1],
 				size[2]
 			);
-		}, 10)
+		}, 20)
 
-		this.bubblePosition.set(0, -380, 0);
-		this.bubblePosition.set(0, -380, 0, {
+		this.bubblePosition.set(0, -300, 0);
+		this.bubblePosition.set(0, -450, 0, {
 			duration: 300,
 			curve: 'outQuart'
 		});

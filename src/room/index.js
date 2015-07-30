@@ -47,7 +47,7 @@ export default function initialize(options) {
 			player.on('toggle-chat', () => chatDialogue.toggle());
 			player.on('submit-chat', () => {
 				socket.emit('chat-entry', {
-					player: player.name,
+					ID: player.ID,
 					content: chatDialogue.pullValue()
 				});
 			});
@@ -66,8 +66,8 @@ export default function initialize(options) {
 		socket.on('chat-entry', function(entry) {
 			room.chatWindow.addComment(entry);
 			if (entry.ID !== player.ID) {
-				character = players[entry.ID];
-				character.showComment(entry);
+				character = playersLocal[entry.ID];
+				character.showComment(entry, character.name);
 			}
 		});
 
