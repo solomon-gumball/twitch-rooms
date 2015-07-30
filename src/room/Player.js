@@ -9,6 +9,7 @@ export class Player extends Character {
 
 		this.socket = socket;
 		this.mobile = true;
+		this.name = options.name;
 		
 		var _this = this;
 

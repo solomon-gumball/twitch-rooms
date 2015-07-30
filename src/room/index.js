@@ -24,7 +24,7 @@ export default function initialize(options) {
 		.setMountPoint(0.5, 1, 0.5);
 
 	var room         = new Room(roomNode)
-	var chatDialogue = new ChatDialogue('chat', socket);
+	var chatDialogue = new ChatDialogue('chat', options.playerName, socket);
 
 	var playersLocal = [];
 
@@ -47,7 +47,7 @@ export default function initialize(options) {
 			player.on('toggle-chat', () => chatDialogue.toggle());
 			player.on('submit-chat', () => {
 				socket.emit('chat-entry', {
-					ID: player.ID,
+					player: player.name,
 					content: chatDialogue.pullValue()
 				});
 			});

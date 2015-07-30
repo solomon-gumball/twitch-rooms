@@ -1,13 +1,13 @@
 import EventEmitter from '../base/event-emitter';
 
 export default class ChatDialogue extends EventEmitter {
-	constructor(id, socket) {
+	constructor(id, playerName, socket) {
 		this.element = document.getElementById(id);
 		this.inputEl = this.element.querySelector('input');
 		this.tagElement = this.element.querySelector('#player-name');
 		this.socket = socket;
 
-		this.tagElement.innerText = '[redwoodfavorite]: ';
+		this.tagElement.innerText = '[' + playerName + ']: ';
 		this.state = true;
 		this.toggle();
 	}
