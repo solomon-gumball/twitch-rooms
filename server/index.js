@@ -1,55 +1,20 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
 app.use(express.static('public'));
-
-/*
-	Game Data
-*/
-
-var playerID = 0;
-
-var data = {
-	duration: 0,
-	players: []
-};
-
-/*
-	New player event
-*/
-
-io.on('connection', function(socket) {
-	var ID = playerID++;
-
-	data.players[ID] = {
-		position: [0, 0, 0],
-		rotation: [0, 0],
-		ID: ID
-	}
-
-	socket.emit('initialize-player', data.players[ID]);
-
-	socket.on('update-player', function(msg) {
-		data.players[ID].position = msg.position;
-		data.players[ID].rotation = msg.rotation;
-	});
-
-	socket.on('chat-entry', function(entry) {
-		io.emit('chat-entry', entry);
-	});
-});
-
-
-/*
-	Update frame events
-*/
-
-setInterval(function() {
-	io.emit('update-frame', data);
-}, 16)
 
 http.listen(3000, function(){
 	console.log('Port 3000 BITCH');
 });
+
+app.post('/create', function(req, res) {
+	console.log(req, res)
+});
+
+/*
+	Local modules
+*/
+
+var addPlayerSockets = require('./socket/addPlayerSockets');
+	addPlayerSockets(http);

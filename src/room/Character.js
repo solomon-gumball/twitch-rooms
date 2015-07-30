@@ -50,6 +50,7 @@ export class Character extends EventEmitter {
 			Set mesh and OBJGeometry
 		*/
 		this.mesh = new Mesh(this.meshNode)
+			// .setFlatShading(true);
 
 		Character.GEOMETRY = Character.GEOMETRY || getGeometries();
 		Character.SKELETON = Character.SKELETON || getSkeleton();
@@ -77,7 +78,7 @@ export class Character extends EventEmitter {
 			.setOrigin(0.5, 0.5, 0.5)
 			.setAbsoluteSize(100, 20, 0)
 			.setRotation(0, Math.PI, 0)
-			.setPosition(0, -300, -100);
+			.setPosition(0, -400, 0);
 
 		this.element = new DOMElement(this.labelNode, { classes: ['character-label'] });
 		this.element.setContent('redwoodfavorite');

@@ -10,6 +10,30 @@
     </head>
 
     <body>
+        <form id="start-form">
+            <div>
+            YOUR NAME: <input id="player-name">            
+            </div>
+            <br>
+
+            <div>
+                JOIN A ROOM:
+                <input id="room-key">
+                <input id="join-button" type="button" value="JOIN">
+            </div>
+            <br>
+
+                - OR - 
+
+            <br>
+            <br>
+            <div>
+                GET A ROOM:
+                <input id="stream-name">
+                <input id="create-button" type="button" value="GET">
+            </div>
+        </form>
+
         <div id="chat"><span id="player-name"></span><input></div>
         <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
         <script src="bundle.js"></script>

@@ -10,6 +10,7 @@ import AssetLoader from './helpers/asset-loader';
 import Geometry from 'famous/webgl-geometries/Geometry';
 import Color from 'famous/utilities/Color';
 import PointLight from 'famous/webgl-renderables/lights/PointLight';
+import AmbientLight from 'famous/webgl-renderables/lights/AmbientLight';
 
 export class Room extends EventEmitter{
 	constructor(node, options) {
@@ -38,27 +39,25 @@ export class Room extends EventEmitter{
 			.setMountPoint(0.5, 1.0, 0.5)
 			.setProportionalSize(0.4, 0.2, 0);
 
-		this.lightNode = node.addChild()
-			.setOrigin(0.5, 0.5, 0.5)
-			.setAlign(0.5, 0.5, 0.5)
-			.setProportionalSize(0.1, 0.1, 0.1)
-
-		this.light = new PointLight(this.lightNode)
-			.setColor(new Color('white'))
-			
 		this.screen = new Screen(this.screenNode);
 
-		// this.floorNode = this.node.addChild()
-		// 	.setMountPoint(0.5, 0.5, 0.5)
-		// 	.setAlign(0.5, 1.0, 0.5)
-		// 	.setOrigin(0.5, 0.5, 0.5)
-		// 	.setRotation(Math.PI / 2, 0, 0);
+		this.lightNode = node.addChild()
+			.setOrigin(0.5, 0.5, 0.5)
+			.setAlign(0.5, 0.5, 0.15)
+			.setProportionalSize(0.1, 0.1, 0.1)
 
-		// this.screenNode = this.node.addChild()
-		// 	.setAlign(0.5, 0.75, 0)
-		// 	.setMountPoint(0.5, 0.5, 0.5)
-		// 	.setProportionalSize(1, 0.5, 0)
+		this.backlightNode = node.addChild()
+			.setAlign(0.5, 0.8, 0.9);
 
+		this.light = new PointLight(this.lightNode)
+			.setColor(new Color([100, 100, 100]));
+
+		// this.backlight = new PointLight(this.backlightNode)
+		// 	.setColor(new Color('gray'));
+
+		this.ambientLight = new AmbientLight(node.addChild())
+			.setColor(new Color([175, 175, 175]))
+			
 		this.chatWindowNode = node.addChild()
 			.setAlign(0.86, 0.5, 0.1)
 			.setMountPoint(0.5, 0.5, 0.5)

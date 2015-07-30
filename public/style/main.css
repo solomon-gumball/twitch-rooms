@@ -11,12 +11,11 @@ div.chat-window {
 
 .character-label {
 	color: white;
-	font-size: 10px;
+	font-size: 14px;
 	text-align: center;
 	font-family: courier;
 	background: black;
 	line-height: 16px;
-	border: 2px;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 	-webkit-box-sizing:border-box;
@@ -75,4 +74,19 @@ div.chat-comment {
 span.player-name {
 	color: red;
 	font-weight: bold;
+}
+
+form#start-form {
+	top: 50%;
+	margin-top: -150px;
+	width: 400px;
+	padding-top: 30px;
+	height: 170px;
+	text-align: center;
+	margin-left: -200px;
+	left: 50%;
+	position: absolute;
+	display: block;
+	z-index: 100;
+	background-color: white;
 }

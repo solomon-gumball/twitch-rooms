@@ -1,9 +1,10 @@
 'use strict';
 
 var FamousEngine = require('famous/core/FamousEngine');
-var KeyHandler   = require('./app/inputs/KeyHandler');
-var AssetLoader  = require('./app/helpers/asset-loader');
-var startApp = require('./app/index');
+var KeyHandler   = require('./room/inputs/KeyHandler');
+var AssetLoader  = require('./room/helpers/asset-loader');
+var startApp = require('./room/index');
+var handleLogin = require('./login/main')
 
 /*
 	Famo.us boilerplate
@@ -27,6 +28,9 @@ function onUpdate () {
 	FamousEngine.requestUpdateOnNextTick(updater);
 }
 
+handleLogin()
+	.then(startApp);
+
 /*
 	Require application code
 */
@@ -40,5 +44,5 @@ AssetLoader.load(
 		]
 	}
 )
-	.then(startApp);
+	// .then(startApp);
 

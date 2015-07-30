@@ -7,7 +7,7 @@ import {Player} from './Player';
 import {Room} from './Room';
 import ChatDialogue from './chat/ChatDialogue';
 
-export default function initialize(collection) {
+export default function initialize(collection, socket) {
 	var ctx = Famous.createScene('body');
 	var socket = io();
 
