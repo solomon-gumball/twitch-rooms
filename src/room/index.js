@@ -7,14 +7,10 @@ import {Player} from './Player';
 import {Room} from './Room';
 import ChatDialogue from './chat/ChatDialogue';
 
-export default function initialize(roomID, playerName) {
+export default function initialize(options) {
 	var ctx = Famous.createScene('body');
-	var socket = io.connect(undefined, { query: `roomID=${roomID}&playerName=playerName` });
-	// var socket = io.connect();
+	var socket = io.connect(undefined, { query: `roomID=${options.roomID}&playerName=${options.playerName}` });
 
-	socket.on('connect', function() {
-		console.log(1111)
-	})
 	var worldCenterNode = ctx.addChild()
 		.setAlign(0.5, 0.5, 0.0)
 		.setMountPoint(0.5, 0.5, 0.5)
@@ -30,13 +26,15 @@ export default function initialize(roomID, playerName) {
 	var room         = new Room(roomNode)
 	var chatDialogue = new ChatDialogue('chat', socket);
 
-	var players = [];
+	var playersLocal = [];
 
 	socket.on('initialize-player', function(msg) {
 
 		/*
 			Initialize player
 		*/
+
+		room.screen.setTwitchStream(msg.stream);
 
 		var playerNode = worldCenterNode.addChild()
 			.setMountPoint(0.5, 0, 0.5)
@@ -45,7 +43,7 @@ export default function initialize(roomID, playerName) {
 			.setMountPoint(0.5, 1, 0.5)
 			.setOrigin(0.5, 0.5, 0.5);
 
-		var player = new Player(playerNode, msg, socket);
+		var player = new Player(playerNode, msg.player, socket);
 			player.on('toggle-chat', () => chatDialogue.toggle());
 			player.on('submit-chat', () => {
 				socket.emit('chat-entry', {
@@ -77,12 +75,12 @@ export default function initialize(roomID, playerName) {
 			Add socket listeners
 		*/
 
-		socket.on('update-frame', function(msg){
-			var i = msg.players.length;
+		socket.on('update-frame', function(players){
+			var i = players.length;
 			var characterNode;
 
 			while (i--) {
-				var target = msg.players[i];
+				var target = players[i];
 
 				/*
 					If self, do not update
@@ -96,7 +94,7 @@ export default function initialize(roomID, playerName) {
 					If new entry, create player
 				*/
 
-				else if (!players[target.ID]) {
+				else if (!playersLocal[target.ID]) {
 					characterNode = worldCenterNode.addChild()
 						.setMountPoint(0.5, 0, 0.5)
 						.setAlign(0.5, 1, 0.5)
@@ -104,7 +102,7 @@ export default function initialize(roomID, playerName) {
 						.setMountPoint(0.5, 1, 0.5)
 						.setOrigin(0.5, 0.5, 0.5);
 
-					players[target.ID] = new Character(characterNode, target);
+					playersLocal[target.ID] = new Character(characterNode, target);
 				}
 
 				/*
@@ -112,7 +110,7 @@ export default function initialize(roomID, playerName) {
 				*/
 
 
-				players[target.ID].receive(msg.players[i]);
+				playersLocal[target.ID].receive(players[i]);
 			}
 		});
 	});	

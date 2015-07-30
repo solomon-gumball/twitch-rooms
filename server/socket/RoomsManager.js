@@ -25,11 +25,13 @@ function RoomsManager(http) {
 			ID: playerID
 		}
 
-		socket.emit('initialize-player', room.players[playerID]);
+		socket.join(roomID);
+
+		socket.emit('initialize-player', { player: room.players[playerID], stream: room.streamName });
 
 		socket.on('update-player', function(msg) {
-			room.players[ID].position = msg.position;
-			room.players[ID].rotation = msg.rotation;
+			room.players[playerID].position = msg.position;
+			room.players[playerID].rotation = msg.rotation;
 		});
 
 		socket.on('chat-entry', function(entry) {
@@ -44,6 +46,7 @@ function RoomsManager(http) {
 
 RoomsManager.prototype.addRoom = function addRoom (streamName) {
 	this._rooms.push({
+		streamName: streamName,
 		duration: 0,
 		players: []
 	});
@@ -54,7 +57,11 @@ RoomsManager.prototype.addRoom = function addRoom (streamName) {
 }
 
 RoomsManager.prototype.updateAll = function updateAll() {
-	this.io.emit('update-frame', this._rooms[0]);
+	for (var i = 0, len = this._rooms.length; i < len; i++) {
+		this.io.to(i).emit('update-frame', this._rooms[i].players);
+	}
+
+	// this.io.emit('update-frame', this._rooms[0]);
 }
 
 module.exports = RoomsManager;

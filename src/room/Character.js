@@ -50,7 +50,6 @@ export class Character extends EventEmitter {
 			Set mesh and OBJGeometry
 		*/
 		this.mesh = new Mesh(this.meshNode)
-			// .setFlatShading(true);
 
 		Character.GEOMETRY = Character.GEOMETRY || getGeometries();
 		Character.SKELETON = Character.SKELETON || getSkeleton();
@@ -81,7 +80,7 @@ export class Character extends EventEmitter {
 			.setPosition(0, -400, 0);
 
 		this.element = new DOMElement(this.labelNode, { classes: ['character-label'] });
-		this.element.setContent('redwoodfavorite');
+		this.element.setContent(options.name);
 
 		/*
 			Create chat bubble

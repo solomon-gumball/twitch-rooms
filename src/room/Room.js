@@ -52,9 +52,6 @@ export class Room extends EventEmitter{
 		this.light = new PointLight(this.lightNode)
 			.setColor(new Color([100, 100, 100]));
 
-		// this.backlight = new PointLight(this.backlightNode)
-		// 	.setColor(new Color('gray'));
-
 		this.ambientLight = new AmbientLight(node.addChild())
 			.setColor(new Color([175, 175, 175]))
 			
@@ -87,25 +84,32 @@ function getGeometry() {
 }
 
 function Screen (node) {
-	// this.element = new DOMElement(node, {
-	// 	tagName: 'iframe',
-	// 	attributes: {
-	// 		frameborder: 0,
-	// 		scrolling: 'no',
-	// 		// height: 378,
-	// 		// width: 620,
-	// 		height: 600,
-	// 		width: 1100,
-	// 		src: "http://www.twitch.tv/pokernighttv/embed"
-	// 	},
-	// 	properties: {
-	// 		pointerEvents: 'none'
-	// 	}
-	// });
+	this.node = node;
 
-	// node.el = new DOMElement(node)
-	// 	.setProperty('background-color', 'blue');
+	this.element = new DOMElement(node, {
+		tagName: 'iframe',
+		attributes: {
+			frameborder: 0,
+			scrolling: 'no',
+			height: 378,
+			width: 620
+		},
+		properties: {
+			pointerEvents: 'none'
+		}
+	});
 }
+
+Screen.prototype.setTwitchStream = function setTwitchStream(streamName) {
+	this.element
+		.setAttribute('src', `http://www.twitch.tv/${streamName}/embed`);
+
+	// hack to make sure attribute loads without context resize
+	
+	this.node
+		.setSizeMode(1, 1, 1)
+		.setSizeMode(0, 0, 0)
+} 
 
 Room.TEXTURES = {
 	FLOOR: 'images/tile2.jpg'
