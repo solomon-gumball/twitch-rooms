@@ -33,7 +33,7 @@ div.chat-window {
 	font-family: Courier;
 }
 
-#player-name {
+span#player-name {
 	color: red;
 	font-weight: bold;
 	height: 100%;
@@ -69,11 +69,6 @@ div.chat-comment {
 	z-index: 1000;
 	color: white;
 	font-size: 60px;
-}
-
-span.player-name {
-	color: red;
-	font-weight: bold;
 }
 
 form#start-form {

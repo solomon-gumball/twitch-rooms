@@ -7,10 +7,14 @@ import {Player} from './Player';
 import {Room} from './Room';
 import ChatDialogue from './chat/ChatDialogue';
 
-export default function initialize(collection, socket) {
+export default function initialize(roomID, playerName) {
 	var ctx = Famous.createScene('body');
-	var socket = io();
+	var socket = io.connect(undefined, { query: `roomID=${roomID}&playerName=playerName` });
+	// var socket = io.connect();
 
+	socket.on('connect', function() {
+		console.log(1111)
+	})
 	var worldCenterNode = ctx.addChild()
 		.setAlign(0.5, 0.5, 0.0)
 		.setMountPoint(0.5, 0.5, 0.5)

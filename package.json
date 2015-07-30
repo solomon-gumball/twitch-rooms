@@ -3,17 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "watch-server": "node server/index.js",
+    "watch-server": "nodemon server/index.js",
     "watch-client": "watchify ./src/main.js -o ./public/bundle.js -d -v -t [ babelify --playground --experimental ]",
-    "watch-all": "npm run watch-client & npm run watch-server"
+    "dev": "npm run watch-client & npm run watch-server"
   },
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.13.2",
     "famous": "git+ssh://git@github.com:Famous/mixed-mode.git#develop",
-    "gl-matrix": "^2.3.1",
-    "mongoose": "^4.1.0",
-    "passport": "^0.2.2",
-    "passport-local": "^1.0.0"
+    "gl-matrix": "^2.3.1"
   },
   "devDependencies": {
     "browserify": "^10.0.0",

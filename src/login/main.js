@@ -13,10 +13,14 @@ export default function Login() {
 			var playerName = nameInput.value;
 			var streamName = createInput.value;
 
-            request.onload = () => res(JSON.parse(request.responseText));
+            request.onload = () => {
+            	var response = JSON.parse(request.responseText);
+
+            	res(response.roomID, playerName);
+            }
             request.open("POST", "/create", true);
             request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			request.send(`player-name=${playerName}&stream-name=${streamName}`);
+			request.send(`playerName=${playerName}&streamName=${streamName}`);
 		});
 	})
 }
