@@ -85,7 +85,7 @@ function registerKeyDown(event) {
 		var pressEvents = this.EVENTTYPES.PRESS[keyName];
 		if (pressEvents) {
 			for (var i = 0; i < pressEvents.length; i++) {
-				pressEvents[i]();
+				pressEvents[i](event);
 			}
 		}
 	}

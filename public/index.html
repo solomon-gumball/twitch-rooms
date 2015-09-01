@@ -10,32 +10,44 @@
     </head>
 
     <body>
-        <form id="start-form">
-            <div>
-            YOUR NAME: <input id="player-name">            
-            </div>
-            <br>
+        <span id="room-number"></span>
 
+        <form id="start-form">
+            <h1 id="logo">TWITCH ROOMS</h1>
+            <div>
+            <span>YOUR NAME: </span>
+                <input id="player-name" class="in-shadow">
+
+            </div>
+                <center> - AND - </center>                
             <div>
                 JOIN A ROOM:
-                <input id="room-key">
-                <input id="join-button" type="button" value="JOIN">
+                <input id="room-key" placeholder="some number..." class="in-shadow">
+                <input id="join-button" class="out-shadow" type="button" value="JOIN">
             </div>
-            <br>
 
-                - OR - 
+               <center> - OR - </center>
 
-            <br>
-            <br>
             <div>
                 GET A ROOM:
-                <input id="stream-name">
-                <input id="create-button" type="button" value="GET">
+                <input id="stream-name" class="in-shadow" placeholder="gsl, sc2proleague...">
+                <input id="create-button" class="out-shadow" type="button" value="GET">
+            </div>
+
+               <center> - OR - </center>
+
+            <div>
+                <input id="random" class="out-shadow" type="button" value="JOIN RANDOM ROOM">
             </div>
         </form>
+        <div id="alert"></div>
+        <div id="help"> Get a new room based on a twitch stream or join a room using a room number.  Need help? Click <a href="https://github.com/redwoodfavorite/twitch-rooms"> here </a> </div>
+        <!-- <div id="help"> Press TAB to toggle chat and WASD to move around! </div> -->
 
-        <div id="chat"><span id="player-name"></span><input></div>
+        <ul id="chat-log">
+        </ul>
         <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
         <script src="bundle.js"></script>
+        <div id="chat-new"><span id="player-name" class="player-name"></span><input></div>
     </body>
 </html>

@@ -1,13 +1,20 @@
 import EventEmitter from '../base/event-emitter';
 
 export default class ChatDialogue extends EventEmitter {
-	constructor(id, playerName, socket) {
+	constructor(id, playerName, playerColor, socket) {
 		this.element = document.getElementById(id);
-		this.inputEl = this.element.querySelector('input');
+		this.inputEl = this.element.querySelector('#chat-new input');
 		this.tagElement = this.element.querySelector('#player-name');
 		this.socket = socket;
 
+		this.inputEl.onfocus = function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
 		this.tagElement.innerText = '[' + playerName + ']: ';
+		this.tagElement.style.color = playerColor;
+		
 		this.state = true;
 		this.toggle();
 	}
@@ -17,7 +24,7 @@ export default class ChatDialogue extends EventEmitter {
 	}
 
 	hide() {
-		this.element.style.display = 'none';
+		this.element.style.visibility = 'hidden';
 	}
 
 	pullValue() {
@@ -27,7 +34,7 @@ export default class ChatDialogue extends EventEmitter {
 	}
 
 	show() {
-		this.element.style.display = 'block';
+		this.element.style.visibility = 'visible';
 		this.inputEl.focus();
 	}
 }

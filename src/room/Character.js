@@ -17,12 +17,96 @@ export class Character extends EventEmitter {
 		super();
 
 		this.node = node;
+		this.color = options.color;
 		this.meshNode = node.addChild();
 		this.ID = options.ID;
 		this.name = options.name;
 		this.position = options.position;
 		this.rotation = options.rotation;
 
+		/*
+			Set size and position
+		*/
+		this.receive({
+			position: options.position,
+			rotation: options.rotation
+		});
+
+		if (!options.isPlayer) renderSelf.call(this, options);
+	}
+
+	receive(input) {
+		this.state = input;
+
+		this.node.setPosition(input.position[0], input.position[1], input.position[2]);
+		this.node.setRotation(input.rotation[0], input.rotation[1], input.rotation[2]);
+	}
+
+	hideComment() {
+		this.bubblePosition.set(0, -200, 0);
+
+		this.frontBubbleNode.setSizeMode(0, 0, 0);
+		this.backBubbleNode.setSizeMode(0, 0, 0);
+
+		this.frontBubbleNode.setOpacity(0);
+		this.backBubbleNode.setOpacity(0);
+
+		this._commentVisible = false;
+	}
+
+	showComment(comment) {
+		
+		this.hideComment();
+
+		this.frontBubbleNode.setSizeMode(2, 2, 2);
+		this.backBubbleNode.setSizeMode(2, 2, 2);
+
+		this._commentVisible = true;
+
+		this.frontBubbleEl
+			.setContent(comment.content);
+
+		this.backBubbleEl
+			.setContent(comment.content);
+
+		clearTimeout(this._hideTimeout);
+		clearTimeout(this._renderTimeout);
+
+		this._renderTimeout = setTimeout(() => this.handleTextRender(), 1000)
+		this._hideTimeout = setTimeout(() => this.hideComment(), 6000)
+	}
+
+	handleTextRender() {
+		var sizeFront = this.frontBubbleEl.getRenderSize();
+		var sizeBack = this.backBubbleEl.getRenderSize();
+
+		sizeFront[0] += 30;
+		sizeFront[1] += 30;
+		sizeBack[0] += 30;
+		sizeBack[1] += 30;
+
+		this.frontBubbleEl.setCutoutState({ size: sizeFront })
+		this.backBubbleEl.setCutoutState({ size: sizeBack })
+
+		this.bubblePosition.set(0, -300, 0, {
+			duration: 300,
+			curve: 'outQuart'
+		});
+
+		this.frontBubbleNode.setOpacity(0);
+		this.backBubbleNode.setOpacity(0);
+		this.backBubbleNode.setOpacity(1, {
+			duration: 700,
+			curve: 'outQuart'
+		});
+		this.frontBubbleNode.setOpacity(1, {
+			duration: 700,
+			curve: 'outQuart'
+		});
+	}
+}
+
+function renderSelf(options) {
 		this._lastMovement = 10;
 
 		var endTime = 3.35;
@@ -50,6 +134,7 @@ export class Character extends EventEmitter {
 		/*
 			Set mesh and OBJGeometry
 		*/
+
 		this.mesh = new Mesh(this.meshNode)
 
 		Character.GEOMETRY = Character.GEOMETRY || getGeometries();
@@ -57,102 +142,73 @@ export class Character extends EventEmitter {
 
 		this.mesh
 			.setGeometry(Character.GEOMETRY)
-			.setBaseColor(new Color('pink'))
+			.setBaseColor(new Color(this.color))
 			.setPositionOffset(Character.MATERIALS.SKELETON)
-		/*
-			Set size and position
-		*/
-		this.receive({
-			position: options.position,
-			rotation: options.rotation
-		});
 
 		/*
 			Create character label
 		*/
-
-		this.labelNode = this.node.addChild()
+		this.labelNodeBack = this.node.addChild()
 			.setSizeMode(1, 1, 1)
-			.setAlign(0.5, 0.0, 0.5)
+			.setAlign(0.5, -2.7, 0.5)
+			.setMountPoint(0.5, 0.5, 0.5)
+			.setOrigin(0.5, 0.5, 0.5)
+			.setAbsoluteSize(100, 20, 0)
+
+		this.labelNodeFront = this.node.addChild()
+			.setSizeMode(1, 1, 1)
+			.setAlign(0.5, -2.7, 0.5)
 			.setMountPoint(0.5, 0.5, 0.5)
 			.setOrigin(0.5, 0.5, 0.5)
 			.setAbsoluteSize(100, 20, 0)
 			.setRotation(0, Math.PI, 0)
-			.setPosition(0, -400, 0);
 
-		this.element = new DOMElement(this.labelNode, { classes: ['character-label'] });
-		this.element.setContent(options.name);
+		this.labelFrontEl = new DOMElement(this.labelNodeFront, { classes: ['character-label'] });
+		this.labelFrontEl.setContent(options.name);
+
+		this.labelBackEl = new DOMElement(this.labelNodeBack, { classes: ['character-label'] });
+		this.labelBackEl.setContent(options.name);
 
 		/*
 			Create chat bubble
 		*/
 
 		this.chatBubbleNode = this.node.addChild()
-			.setSizeMode(2, 2, 2)
 			.setAlign(0.5, 0.0, 0.5)
-			.setMountPoint(0.5, 0.5, 0.5)
+			.setProportionalSize(0, 0, 0)
+			.setMountPoint(0.5, 1, 0.5)
+
+		this.frontBubbleNode = this.chatBubbleNode.addChild()
+			.setSizeMode(2, 2, 2)
+			.setMountPoint(0.5, 1, 0)
 			.setAbsoluteSize(0, 0, 0)
 			.setOrigin(0.5, 0.5, 0.5)
 			.setRotation(0, Math.PI, 0)
+			.setProportionalSize(0, 0, 0)
+
+		this.backBubbleNode = this.chatBubbleNode.addChild()
+			.setSizeMode(2, 2, 2)
+			.setAbsoluteSize(0, 0, 0)
+			.setMountPoint(0.5, 1, 0)
+			.setOrigin(0.5, 0.5, 0.5)
+			.setPosition(0, 0, 0)
+			.setRotation(0, 0, 0)
 			.setProportionalSize(0, 0, 0);
 
-
-		this.bubbleEl = new DOMElement(this.chatBubbleNode, {
+		this.backBubbleEl = new DOMElement(this.backBubbleNode, {
+			tagName: 'span',
 			classes: ['chat-bubble']
 		});
 
-		this.bubbleOpacity = new Opacity(this.chatBubbleNode);
+		this.frontBubbleEl = new DOMElement(this.frontBubbleNode, {
+			tagName: 'span',
+			classes: ['chat-bubble']
+		});
+
+		this.bubbleOpacity = new Opacity(this.chatBubbleNode)
 		this.bubblePosition = new Position(this.chatBubbleNode);
 		this.hideComment();
 		this._hideTimeout;
-	}
-
-	receive(input) {
-		this.state = input;
-
-		this.node.setPosition(input.position[0], input.position[1], input.position[2]);
-		this.node.setRotation(input.rotation[0], input.rotation[1], input.rotation[2]);
-	}
-
-	hideComment() {
-		this.bubblePosition.set(0, 0, 0);
-		this.chatBubbleNode.setSizeMode(0, 0, 0);
-
-		this._commentVisible = false;
-	}
-
-	showComment(comment) {
-		this.chatBubbleNode.setSizeMode(2, 2, 2);
-
-		setTimeout(() => {
-			this.chatBubbleNode.setSizeMode(1, 1, 1);
-			var size = this.bubbleEl.getRenderSize();
-			this.chatBubbleNode.setAbsoluteSize(
-				size[0],
-				size[1],
-				size[2]
-			);
-		}, 20)
-
-		this.bubblePosition.set(0, -300, 0);
-		this.bubblePosition.set(0, -450, 0, {
-			duration: 300,
-			curve: 'outQuart'
-		});
-		this.bubbleOpacity.set(0);
-		this.bubbleOpacity.set(1, {
-			duration: 700,
-			curve: 'outQuart'
-		});
-
-		this._commentVisible = true;
-
-		this.bubbleEl
-			.setContent(comment.content)
-
-		clearTimeout(this._hideTimeout);
-		this._hideTimeout = setTimeout(() => this.hideComment(), 5000)
-	}
 }
 
 function getSkeleton () {
@@ -166,7 +222,7 @@ function getGeometries() {
 
 	// for some reason maya normals are all fucked up...
 
-	var normals = GeometryHelper.computeNormals(json.vertices, json.indices);
+	// var normals = GeometryHelper.computeNormals(json.vertices, json.indices);
 
 	// ...
 
@@ -176,7 +232,7 @@ function getGeometries() {
 	return new Geometry({
 		buffers: [
 	        { name: 'a_pos', data: json.vertices, size: 3 },
-	        { name: 'a_normals', data: normals, size: 3 },
+	        { name: 'a_normals', data: [], size: 3 },
 	        { name: 'indices', data: json.indices, size: 1 },
 	        { name: 'a_weight', data: json.skinWeights, size: 4 }
 		]

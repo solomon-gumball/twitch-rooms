@@ -29,6 +29,7 @@ export var KEY_MAP = {
      "ENTER": 13,
      "SHIFT": 16,
      "ESC": 27,
+     "ALT": 18,
      "SPACE": 32,
      "LEFT": 37,
      "UP": 38,
@@ -69,6 +70,7 @@ export var KEY_MAP = {
      37 : "LEFT",
      38 : "UP",
      39 : "RIGHT",
-     40 : "DOWN"
+     40 : "DOWN",
+     18 : "ALT"
   }
 }

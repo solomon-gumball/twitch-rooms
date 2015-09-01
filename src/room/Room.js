@@ -3,7 +3,6 @@ import DOMElement from 'famous/dom-renderables/DOMElement';
 import Material from 'famous/webgl-materials/Material';
 import Mesh from 'famous/webgl-renderables/Mesh';
 import TextureRegistry from 'famous/webgl-materials/TextureRegistry';
-import ChatWindow from './chat/ChatWindow';
 import EventEmitter from './base/event-emitter';
 import OBJLoader from 'famous/webgl-geometries/OBJLoader';
 import AssetLoader from './helpers/asset-loader';
@@ -11,39 +10,25 @@ import Geometry from 'famous/webgl-geometries/Geometry';
 import Color from 'famous/utilities/Color';
 import PointLight from 'famous/webgl-renderables/lights/PointLight';
 import AmbientLight from 'famous/webgl-renderables/lights/AmbientLight';
+import GeometryHelper from 'famous/webgl-geometries/GeometryHelper';
+import PlaneGeometry from 'famous/webgl-geometries/primitives/Plane';
 
 export class Room extends EventEmitter{
 	constructor(node, options) {
 		super();
 
-		var material = new Material.image(
-			[],
-			{
-				texture: TextureRegistry.register(
-					'wall-texture',
-					'images/planks-minecraft.png',
-				{
-					wrapS: 'REPEAT',
-					wrapT: 'REPEAT'
-				})
-			}
-		);
-
-		this.meshNode = node.addChild();
-		this.mesh = new Mesh(this.meshNode)
-			.setGeometry(getGeometry())
-			.setBaseColor(material);
+		this.buildGeometries(node);
 
 		this.screenNode = node.addChild()
-			.setAlign(0.5, 0.6, 0.14)
+			.setAlign(0.5, 0.643, 0.06)
 			.setMountPoint(0.5, 1.0, 0.5)
-			.setProportionalSize(0.4, 0.2, 0);
+			.setProportionalSize(0.6, 0.28, 0.0);
 
 		this.screen = new Screen(this.screenNode);
 
 		this.lightNode = node.addChild()
 			.setOrigin(0.5, 0.5, 0.5)
-			.setAlign(0.5, 0.5, 0.15)
+			.setAlign(0.5, 0.5, 0.2)
 			.setProportionalSize(0.1, 0.1, 0.1)
 
 		this.backlightNode = node.addChild()
@@ -54,39 +39,108 @@ export class Room extends EventEmitter{
 
 		this.ambientLight = new AmbientLight(node.addChild())
 			.setColor(new Color([175, 175, 175]))
-			
-		this.chatWindowNode = node.addChild()
-			.setAlign(0.86, 0.5, 0.1)
-			.setMountPoint(0.5, 0.5, 0.5)
-			.setProportionalSize(0.22, 0.27, 0)
-			.setRotation(0, 0, 0);
+	}
 
-		this.chatWindow = new ChatWindow(this.chatWindowNode);
+	buildGeometries(node) {
+		var models = {
+			screen: {
+				URL: 'obj/room-screen-model.json',
+				material: {
+					color: [30, 30, 30]
+				},
+				align: [0, 0, 0.02]
+			},
+			walls: {
+				URL: 'obj/room-walls-model.json',
+				material: {
+					texture: 'images/curtain.png'
+				},
+				align: [0, 0.25, 0.0]
+			},
+			floor: {
+				URL: 'obj/room-floor-model.json',
+				material: {
+					color: 'darkred'
+				},
+				align: [0, 0.25, 0.5]
+			}
+		};
+
+		var out = {};
+
+
+		var modelURL, geometry, meshNode, mesh, model, material;
+		for (var modelName in models) {
+			model = models[modelName];
+			modelURL = model.URL;
+			geometry = AssetLoader.get(modelURL);
+			geometry = JSON.parse(geometry);
+			geometry.normals = GeometryHelper.computeNormals(geometry.vertices, geometry.indices);
+
+			if (modelName === 'walls') {
+				geometry = new PlaneGeometry();
+				geometry.spec.bufferValues[1] = geometry.spec.bufferValues[1].map(function(val, i) {
+					return val === 0.75 && i % 2 ? 0.5 : val;
+				})
+			}
+
+			else {
+				geometry = new Geometry({
+					buffers: [
+					    { name: 'a_texCoord', data: geometry.uvs, size: 2 },
+				        { name: 'a_pos', data: geometry.vertices, size: 3 },
+				        { name: 'a_normals', data: geometry.normals, size: 3 },
+				        { name: 'indices', data: geometry.indices, size: 1 }
+					]
+				});
+			}
+
+			material = model.material.color ? new Color(model.material.color) : new Material.image(
+				[],
+				{
+					texture: TextureRegistry.register(
+						null,
+						model.material.texture,
+					{
+						flipYWebgl: true,
+						wrapS: 'REPEAT',
+						wrapT: 'REPEAT',
+						mipmap: true
+					})
+				}
+			);
+
+			meshNode = node.addChild()
+				.setAlign(model.align[0], model.align[1], model.align[2])
+
+			mesh = new Mesh(meshNode)
+				.setGeometry(geometry)
+				.setBaseColor(material);
+
+			if (modelName === 'walls')
+				mesh.setDrawOptions({
+					side: 'back'
+				});
+		}
+
+		return out;
 	}
 }
 
-function getGeometry() {
-	var geometries = OBJLoader.formatText(
-		AssetLoader.get('obj/room2.obj'),
-		{
-			normalize: true
-		}
-	);
-
-	return new Geometry({
-		buffers: [
-		    { name: 'a_texCoord', data: geometries[0].textureCoords, size: 2 },
-	        { name: 'a_pos', data: geometries[0].vertices, size: 3 },
-	        { name: 'a_normals', data: geometries[0].normals, size: 3 },
-	        { name: 'indices', data: geometries[0].indices, size: 1 }
-		]
-	});
-}
 
 function Screen (node) {
-	this.node = node;
+	this.screenNode = node.addChild();
 
-	this.element = new DOMElement(node, {
+	this.headerNode = node.addChild()
+		.setProportionalSize(1, 0.15, 0)
+		.setAlign(0, 1.1, 0)
+
+	this.headerEl = new DOMElement(this.headerNode, {
+		classes: ['stream-header'],
+		content: 'twitch.tv/...'
+	});
+
+	this.screenEl = new DOMElement(this.screenNode, {
 		tagName: 'iframe',
 		attributes: {
 			frameborder: 0,
@@ -101,12 +155,16 @@ function Screen (node) {
 }
 
 Screen.prototype.setTwitchStream = function setTwitchStream(streamName) {
-	this.element
+	this.screenEl
 		.setAttribute('src', `http://www.twitch.tv/${streamName}/embed`);
+		// .setAttribute('src', `https://www.youtube.com/embed/eNvSKE0VMDo`);
+
+	this.headerEl
+		.setContent(`twitch.tv/${streamName}`)
 
 	// hack to make sure attribute loads without context resize
-	
-	this.node
+
+	this.screenNode
 		.setSizeMode(1, 1, 1)
 		.setSizeMode(0, 0, 0)
 } 

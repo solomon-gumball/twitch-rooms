@@ -4,7 +4,10 @@ var FamousEngine = require('famous/core/FamousEngine');
 var KeyHandler   = require('./room/inputs/KeyHandler');
 var AssetLoader  = require('./room/helpers/asset-loader');
 var startApp = require('./room/index');
-var handleLogin = require('./login/main')
+var handleLogin = require('./login/main');
+var testBrowserCompatability = require('./browserCompatability');
+
+testBrowserCompatability();
 
 /*
 	Famo.us boilerplate
@@ -38,7 +41,9 @@ handleLogin()
 AssetLoader.load(
 	{
 		fromURL: [
-			'obj/room2.obj',
+			'obj/room-walls-model.json',
+			'obj/room-floor-model.json',
+			'obj/room-screen-model.json',
 			'obj/character2.obj',
 			'obj/character.json'
 		]

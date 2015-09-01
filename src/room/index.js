@@ -6,6 +6,8 @@ import {Character} from './Character';
 import {Player} from './Player';
 import {Room} from './Room';
 import ChatDialogue from './chat/ChatDialogue';
+import ChatLog from './chat/ChatLog';
+import NotificationBox from './chat/NotificationBox';
 
 export default function initialize(options) {
 	var ctx = Famous.createScene('body');
@@ -24,11 +26,13 @@ export default function initialize(options) {
 		.setMountPoint(0.5, 1, 0.5);
 
 	var room         = new Room(roomNode)
-	var chatDialogue = new ChatDialogue('chat', options.playerName, socket);
 
 	var playersLocal = [];
 
 	socket.on('initialize-player', function(msg) {
+		var notificationBox = new NotificationBox('#help');
+		var chatDialogue = new ChatDialogue('chat-new', msg.player.name, msg.player.color, socket);
+		var chatLog = new ChatLog('#chat-log');
 
 		/*
 			Initialize player
@@ -37,26 +41,35 @@ export default function initialize(options) {
 		room.screen.setTwitchStream(msg.stream);
 
 		var playerNode = worldCenterNode.addChild()
-			.setMountPoint(0.5, 0, 0.5)
 			.setAlign(0.5, 1, 0.5)
-			.setProportionalSize(0.03, 0.03, 0.03)
-			.setMountPoint(0.5, 1, 0.5)
+			.setProportionalSize(0.02, 0.02, 0.02)
+			.setMountPoint(0.5, 0, 0.5)
 			.setOrigin(0.5, 0.5, 0.5);
 
-		var player = new Player(playerNode, msg.player, socket);
-			player.on('toggle-chat', () => chatDialogue.toggle());
+		var playerNode2 = playerNode.addChild()
+			.setOrigin(0.5, 0.5, 0.5)
+			.setAlign(0.5, 0.5, 0.5)
+			.setMountPoint(0.5, 0.5, 0.5)
+
+		var player = new Player(playerNode, playerNode2, msg.player, socket);
+			player.on('toggle-chat', () => {
+				chatDialogue.toggle();
+				chatLog.toggle();
+			});
 			player.on('submit-chat', () => {
 				socket.emit('chat-entry', {
 					ID: player.ID,
 					content: chatDialogue.pullValue()
-				});
+				});	
 			});
+
+		playersLocal[player.ID] = player;
 
 		/*
 			Add player to scene
 		*/
 
-		var cameraNode = playerNode.addChild()
+		var cameraNode = playerNode2.addChild()
 			.setAlign(0.5, -2.3, 0.9)
 
 		var camera = new Camera(cameraNode);
@@ -64,11 +77,19 @@ export default function initialize(options) {
 
 		var character;
 		socket.on('chat-entry', function(entry) {
-			room.chatWindow.addComment(entry);
+			character = playersLocal[entry.ID];
+
 			if (entry.ID !== player.ID) {
-				character = playersLocal[entry.ID];
-				character.showComment(entry, character.name);
+				character.showComment(entry);
 			}
+			
+			chatLog.addComment(entry, character.name, character.color);
+		});
+
+		socket.on('remove-player', function(message) {
+			var removed = playersLocal[message.ID];
+			playersLocal[message.ID] = null;
+
 		});
 
 		/*
@@ -96,10 +117,9 @@ export default function initialize(options) {
 
 				else if (!playersLocal[target.ID]) {
 					characterNode = worldCenterNode.addChild()
-						.setMountPoint(0.5, 0, 0.5)
 						.setAlign(0.5, 1, 0.5)
-						.setProportionalSize(0.03, 0.03, 0.03)
-						.setMountPoint(0.5, 1, 0.5)
+						.setProportionalSize(0.02, 0.02, 0.02)
+						.setMountPoint(0.5, 0, 0.5)
 						.setOrigin(0.5, 0.5, 0.5);
 
 					playersLocal[target.ID] = new Character(characterNode, target);

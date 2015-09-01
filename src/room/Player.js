@@ -1,19 +1,64 @@
-import {Character} from './Character';
+import { Character } from './Character';
 import KeyHandler from './inputs/KeyHandler';
 import GestureHandler from 'famous/components/GestureHandler';
 import DOMElement from 'famous/dom-renderables/DOMElement';
 
 export class Player extends Character {
-	constructor(node, options, socket) {
+	constructor(node, node2, options, socket) {
+		options.isPlayer = true;
+
 		super(node, options);
 
 		this.socket = socket;
 		this.mobile = true;
-		
-		var _this = this;
 
+		this.rotation = [0, 0, 0];
+		this.boundingBox = {
+			x: [-1650, 1650],
+			z: [-1650, 2050]
+		};
+
+		var element = document.querySelector('.famous-dom-renderer');
+		var first = false;
+		element.addEventListener('click', function() {
+			element.requestPointerLock();
+		});
+		element.requestPointerLock = element.requestPointerLock ||
+		     element.mozRequestPointerLock ||
+		     element.webkitRequestPointerLock;
+		element.requestPointerLock();
+		element.addEventListener('mousemove', moveCallback);
+		
+		// Ask the browser to lock the pointer
+
+
+		var _this = this;
+		var changed;
+
+		function moveCallback(e) {
+			var movementX = e.movementX ||
+				e.mozMovementX          ||
+				e.webkitMovementX       ||
+				0,
+			movementY = e.movementY ||
+				e.mozMovementY      ||
+				e.webkitMovementY   ||
+				0;
+
+			if (movementX) {
+				_this.state.rotation[1] -= Player.TURN_SPEED * movementX;
+				changed = true;
+			}
+
+			if (movementY) {
+				_this.rotation[0] += Player.TURN_SPEED * movementY;
+			}
+		}
+
+		var updatedPosition = [];
 		KeyHandler.on('UPDATE', function(activeKeys) {
-			var changed;
+			updatedPosition[0] = _this.state.position[0];
+			updatedPosition[2] = _this.state.position[2];
 
 			if (!_this.mobile) return;
 
@@ -22,44 +67,52 @@ export class Player extends Character {
 			*/
 
 			if (activeKeys['W']) {
-				_this.state.position[2] -= (Math.cos(_this.state.rotation[1]) * Player.VELOCITY);
-				_this.state.position[0] -= (Math.sin(_this.state.rotation[1]) * Player.VELOCITY);
+				updatedPosition[2] -= (Math.cos(_this.state.rotation[1]) * Player.VELOCITY);
+				updatedPosition[0] -= (Math.sin(_this.state.rotation[1]) * Player.VELOCITY);
 				changed = true;
 			}
 			if (activeKeys['S']) {
-				_this.state.position[2] += (Math.cos(_this.state.rotation[1]) * Player.VELOCITY);
-				_this.state.position[0] += (Math.sin(_this.state.rotation[1]) * Player.VELOCITY);
+				updatedPosition[2] += (Math.cos(_this.state.rotation[1]) * Player.VELOCITY);
+				updatedPosition[0] += (Math.sin(_this.state.rotation[1]) * Player.VELOCITY);
 				changed = true;
 			}
 			if (activeKeys['A']) {
-				_this.state.position[2] -= (Math.cos(_this.state.rotation[1] + Math.PI / 2) * Player.VELOCITY);
-				_this.state.position[0] -= (Math.sin(_this.state.rotation[1] + Math.PI / 2) * Player.VELOCITY);
+				updatedPosition[2] -= (Math.cos(_this.state.rotation[1] + Math.PI / 2) * Player.VELOCITY);
+				updatedPosition[0] -= (Math.sin(_this.state.rotation[1] + Math.PI / 2) * Player.VELOCITY);
 				changed = true;
 			}
 			if (activeKeys['D']) {
-				_this.state.position[2] -= (Math.cos(_this.state.rotation[1] - Math.PI / 2) * Player.VELOCITY);
-				_this.state.position[0] -= (Math.sin(_this.state.rotation[1] - Math.PI / 2) * Player.VELOCITY);
+				updatedPosition[2] -= (Math.cos(_this.state.rotation[1] - Math.PI / 2) * Player.VELOCITY);
+				updatedPosition[0] -= (Math.sin(_this.state.rotation[1] - Math.PI / 2) * Player.VELOCITY);
 				changed = true;
+			}
+
+			if (changed) {
+				changed = _this.applyBoundaries(
+					updatedPosition,
+					_this.state.position
+				);
 			}
 
 			/*
 				Handle look
 			*/
 
-			if (mousePosX < innerWidth * 0.4) {
-				_this.state.rotation[1] += Player.TURN_SPEED * scaleX; changed = true;
-			}
-			else if (mousePosX > innerWidth * 0.6) {
-				_this.state.rotation[1] -= Player.TURN_SPEED * scaleX; changed = true;
-			}
-
 			if (changed) {
 				_this.receive(_this.state);
 				_this.socket.emit('update-player', _this.state);
+
+				node2.setRotation(
+					_this.rotation[0],
+					_this.rotation[1],
+					_this.rotation[2]
+				)
 			}
+
+			changed = false;
 		});
 
-		KeyHandler.on('PRESS:ESC', () => {
+		KeyHandler.on('PRESS:ALT', e => {
 			this.toggleMove();
 			this.emit('toggle-chat')
 		});
@@ -94,7 +147,18 @@ export class Player extends Character {
 		}
 
 		this.chatStatus = false;
-		this.labelNode.setAbsoluteSize(0, 0, 0);
+	}
+
+	applyBoundaries(newPos, currentPos) {
+		var changed = false;
+
+		if (newPos[0] > this.boundingBox.x[0] && newPos[0] < this.boundingBox.x[1])
+			currentPos[0] = newPos[0], changed = true;
+
+		if (newPos[2] > this.boundingBox.z[0] && newPos[2] < this.boundingBox.z[1])
+			currentPos[2] = newPos[2], changed = true;
+
+		return changed;
 	}
 
 	toggleMove() {
@@ -103,4 +167,4 @@ export class Player extends Character {
 }
 
 Player.VELOCITY = 9;
-Player.TURN_SPEED = 0.10;
+Player.TURN_SPEED = 0.002;

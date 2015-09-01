@@ -5,7 +5,8 @@
   "scripts": {
     "watch-server": "nodemon server/index.js",
     "watch-client": "watchify ./src/main.js -o ./public/bundle.js -d -v -t [ babelify --playground --experimental ]",
-    "dev": "npm run watch-client & npm run watch-server"
+    "dev": "npm run watch-client & npm run watch-server",
+    "start": "browserify ./src/main.js  -o ./public/bundle.js -d -v -t [ babelify --playground --experimental ] & node server/index.js"
   },
   "dependencies": {
     "body-parser": "^1.13.2",
