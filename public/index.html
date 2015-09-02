@@ -42,12 +42,21 @@
         </form>
         <div id="alert"></div>
         <div id="help"> Get a new room based on a twitch stream or join a room using a room number.  Need help? Click <a href="https://github.com/redwoodfavorite/twitch-rooms"> here </a> </div>
-        <!-- <div id="help"> Press TAB to toggle chat and WASD to move around! </div> -->
 
         <ul id="chat-log">
         </ul>
         <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
         <script src="bundle.js"></script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-67052018-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
         <div id="chat-new"><span id="player-name" class="player-name"></span><input></div>
     </body>
 </html>

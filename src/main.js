@@ -44,8 +44,7 @@ AssetLoader.load(
 			'obj/room-walls-model.json',
 			'obj/room-floor-model.json',
 			'obj/room-screen-model.json',
-			'obj/character2.obj',
-			'obj/character.json'
+			'obj/character-new.json',
 		]
 	}
 )

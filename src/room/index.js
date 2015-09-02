@@ -82,14 +82,14 @@ export default function initialize(options) {
 			if (entry.ID !== player.ID) {
 				character.showComment(entry);
 			}
-			
+
 			chatLog.addComment(entry, character.name, character.color);
 		});
 
 		socket.on('remove-player', function(message) {
-			var removed = playersLocal[message.ID];
+			var removed = playersLocal[message.ID].node;
+			worldCenterNode.removeChild(removed);
 			playersLocal[message.ID] = null;
-
 		});
 
 		/*
@@ -119,7 +119,7 @@ export default function initialize(options) {
 					characterNode = worldCenterNode.addChild()
 						.setAlign(0.5, 1, 0.5)
 						.setProportionalSize(0.02, 0.02, 0.02)
-						.setMountPoint(0.5, 0, 0.5)
+						.setMountPoint(0.5, -0.9, 0.5)
 						.setOrigin(0.5, 0.5, 0.5);
 
 					playersLocal[target.ID] = new Character(characterNode, target);

@@ -213,12 +213,12 @@ function renderSelf(options) {
 
 function getSkeleton () {
 	return new AnimatedSkeleton(
-		JSON.parse(AssetLoader.get('obj/character.json'))
+		JSON.parse(AssetLoader.get('obj/character-new.json'))
 	);
 }
 
 function getGeometries() {
-	var json = JSON.parse(AssetLoader.get('obj/character.json'))
+	var json = JSON.parse(AssetLoader.get('obj/character-new.json'))
 
 	// for some reason maya normals are all fucked up...
 
