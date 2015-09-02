@@ -41,9 +41,9 @@ export default function initialize(options) {
 		room.screen.setTwitchStream(msg.stream);
 
 		var playerNode = worldCenterNode.addChild()
-			.setAlign(0.5, 1, 0.5)
+			.setAlign(0.5, 1, 0.7)
 			.setProportionalSize(0.02, 0.02, 0.02)
-			.setMountPoint(0.5, 0, 0.5)
+			.setMountPoint(0.5, -0.9, 0.5)
 			.setOrigin(0.5, 0.5, 0.5);
 
 		var playerNode2 = playerNode.addChild()
@@ -117,7 +117,7 @@ export default function initialize(options) {
 
 				else if (!playersLocal[target.ID]) {
 					characterNode = worldCenterNode.addChild()
-						.setAlign(0.5, 1, 0.5)
+						.setAlign(0.5, 1, 0.7)
 						.setProportionalSize(0.02, 0.02, 0.02)
 						.setMountPoint(0.5, -0.9, 0.5)
 						.setOrigin(0.5, 0.5, 0.5);
