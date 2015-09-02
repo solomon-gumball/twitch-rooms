@@ -24,3 +24,7 @@ Visit the live site: [twitchrooms.com](http://www.twitchrooms.com)
 1. Fill in the `NAME` field with your desired player name.
 2. Select the `JOIN A RANDOM ROOM` button to be placed in a random room!
 
+
+# Controls
+
+- WASD - Move forward, left, back and right.
