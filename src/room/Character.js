@@ -119,7 +119,13 @@ function renderSelf(options) {
 				this._lastMovement++;
 				if (this._lastMovement < 5) {
 					lastTime = time;
-					this.mesh.setUniform('u_boneMatrices[5]', Character.SKELETON.update(boneTransforms, time));
+					this.mesh.setUniform(
+						'u_boneMatrices[5]',
+						Character.SKELETON.update(
+							boneTransforms,
+							time
+						)
+					);
 				}
 
 			}.bind(this),
@@ -148,6 +154,7 @@ function renderSelf(options) {
 		/*
 			Create character label
 		*/
+
 		this.labelNodeBack = this.node.addChild()
 			.setSizeMode(1, 1, 1)
 			.setAlign(0.5, -2.7, 0.5)
@@ -251,8 +258,6 @@ Material.registerExpression('skeleton', {
 			weightSum += a_weight[i];
 			bonedPos += (u_boneMatrices[i] * pos4 * a_weight[i]).xyz;
 		}
-
-		// lol
 
 		float finalWeight = 1.0 - weightSum;
 		bonedPos += (u_boneMatrices[4] * pos4 * finalWeight).xyz;

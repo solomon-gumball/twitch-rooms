@@ -14,7 +14,7 @@ export class Player extends Character {
 
 		this.rotation = [0, 0, 0];
 		this.boundingBox = {
-			x: [-1650, 1650],
+			x: [-2650, 1650],
 			z: [-2550, 1300]
 		};
 
