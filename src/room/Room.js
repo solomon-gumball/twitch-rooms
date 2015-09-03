@@ -60,7 +60,8 @@ export class Room extends EventEmitter{
 			floor: {
 				URL: 'obj/room-floor-model.json',
 				material: {
-					color: 'darkred'
+					// color: 'darkred'
+					texture: 'images/carpet.png'
 				},
 				align: [0, 0.25, 0.5]
 			}
@@ -80,7 +81,8 @@ export class Room extends EventEmitter{
 			if (modelName === 'walls') {
 				geometry = new PlaneGeometry();
 				geometry.spec.bufferValues[1] = geometry.spec.bufferValues[1].map(function(val, i) {
-					return val === 0.75 && i % 2 ? 0.5 : val;
+					return i % 2 ? val * 0.1 : val;
+					return val;
 				})
 			}
 
@@ -145,6 +147,7 @@ function Screen (node) {
 		attributes: {
 			frameborder: 0,
 			scrolling: 'no',
+			type: 'text/html',
 			height: 378,
 			width: 620
 		},
@@ -157,7 +160,6 @@ function Screen (node) {
 Screen.prototype.setTwitchStream = function setTwitchStream(streamName) {
 	this.screenEl
 		.setAttribute('src', `http://www.twitch.tv/${streamName}/embed`);
-		// .setAttribute('src', `https://www.youtube.com/embed/eNvSKE0VMDo`);
 
 	this.headerEl
 		.setContent(`twitch.tv/${streamName}`)
