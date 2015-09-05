@@ -60,7 +60,6 @@ export class Room extends EventEmitter{
 			floor: {
 				URL: 'obj/room-floor-model.json',
 				material: {
-					// color: 'darkred'
 					texture: 'images/carpet.png'
 				},
 				align: [0, 0.25, 0.5]

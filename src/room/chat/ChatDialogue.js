@@ -2,6 +2,8 @@ import EventEmitter from '../base/event-emitter';
 
 export default class ChatDialogue extends EventEmitter {
 	constructor(id, playerName, playerColor, socket) {
+		super();
+		
 		this.element = document.getElementById(id);
 		this.inputEl = this.element.querySelector('#chat-new input');
 		this.tagElement = this.element.querySelector('#player-name');

@@ -4,23 +4,22 @@
   "main": "index.js",
   "scripts": {
     "watch-server": "nodemon server/index.js",
-    "watch-client": "watchify ./src/main.js -o ./public/bundle.js -d -v -t [ babelify --playground --experimental ]",
+    "watch-client": "watchify ./src/main.js -o ./public/bundle.js -d -v -t [ babelify ]",
     "dev": "npm run watch-client & npm run watch-server",
-    "start": "browserify ./src/main.js  -o ./public/bundle.js -d -v -t [ babelify --playground --experimental ] & node server/index.js"
+    "start": "browserify ./src/main.js  -o ./public/bundle.js -d -v -t [ babelify ] & node server/index.js"
   },
   "dependencies": {
+    "babelify": "^6.3.0",
     "body-parser": "^1.13.2",
+    "browserify": "^10.0.0",
+    "express": "^4.12.3",
     "famous": "git://github.com/redwoodfavorite/engine.git#twitch-rooms",
     "gl-matrix": "^2.3.1",
-    "express": "^4.12.3",
-    "browserify": "^10.0.0",
     "http": "0.0.0",
     "socket.io": "^1.3.5",
-    "watchify": "^3.2.1",
-    "babelify": "^5.0.3"
+    "watchify": "^3.2.1"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "author": "",
   "license": "ISC"
 }

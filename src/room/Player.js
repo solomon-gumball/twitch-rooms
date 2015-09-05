@@ -20,14 +20,17 @@ export class Player extends Character {
 
 		var element = document.querySelector('.famous-dom-renderer');
 		var first = false;
-		element.addEventListener('click', function() {
+
+		if (havePointerLock) {
+			element.addEventListener('click', function() {
+				element.requestPointerLock();
+			});
+			element.requestPointerLock = element.requestPointerLock ||
+			     element.mozRequestPointerLock ||
+			     element.webkitRequestPointerLock;
 			element.requestPointerLock();
-		});
-		element.requestPointerLock = element.requestPointerLock ||
-		     element.mozRequestPointerLock ||
-		     element.webkitRequestPointerLock;
-		element.requestPointerLock();
-		element.addEventListener('mousemove', moveCallback);
+			element.addEventListener('mousemove', moveCallback);
+		}
 		
 		// Ask the browser to lock the pointer
 

@@ -1,12 +1,15 @@
 export default function testBrowseryCompatability() {
 
-	if (!window.chrome) {
-		alert('You are using a browser that is not Chrome! Until I fix the cross-browser issues, please use Chrome for Twitch Roooms.')
+	var isChrome = !!window.chrome && !isOpera;
+	var isFirefox = typeof InstallTrigger !== 'undefined';
+
+	if (!isChrome || !isFirefox) {
+		alert('You are using a browser that is not Chrome or Firefox! Until I fix the cross-browser issues, please use either of these browsers for Twitch Roooms.')
 	}
 
-	var havePointerLock = 'pointerLockElement' in document ||
+	window.havePointerLock = 'pointerLockElement' in document ||
 	    'mozPointerLockElement' in document ||
 	    'webkitPointerLockElement' in document;
 
-	if (!havePointerLock) throw 'PointerLock not supported on your browser!';
+	if (!havePointerLock) console.warn('PointerLock not supported on your browser!');
 }
