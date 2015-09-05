@@ -1,6 +1,6 @@
 export default function testBrowseryCompatability() {
 
-	var isChrome = !!window.chrome && !isOpera;
+	var isChrome = !!window.chrome;
 	var isFirefox = typeof InstallTrigger !== 'undefined';
 
 	if (!isChrome || !isFirefox) {
