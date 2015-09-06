@@ -12,6 +12,7 @@ import PointLight from 'famous/webgl-renderables/lights/PointLight';
 import AmbientLight from 'famous/webgl-renderables/lights/AmbientLight';
 import GeometryHelper from 'famous/webgl-geometries/GeometryHelper';
 import PlaneGeometry from 'famous/webgl-geometries/primitives/Plane';
+import CubeGeometry from 'famous/webgl-geometries/primitives/Box';
 
 export class Room extends EventEmitter{
 	constructor(node, options) {
@@ -48,14 +49,14 @@ export class Room extends EventEmitter{
 				material: {
 					color: [30, 30, 30]
 				},
-				align: [0, 0, 0.02]
+				align: [0, -0.03, 0.02]
 			},
 			walls: {
 				URL: 'obj/room-walls-model.json',
 				material: {
 					texture: 'images/curtain.png'
 				},
-				align: [0, 0.25, 0.0]
+				align: [0, 0.1, 0.0]
 			},
 			floor: {
 				URL: 'obj/room-floor-model.json',
@@ -78,11 +79,11 @@ export class Room extends EventEmitter{
 			geometry.normals = GeometryHelper.computeNormals(geometry.vertices, geometry.indices);
 
 			if (modelName === 'walls') {
-				geometry = new PlaneGeometry();
-				geometry.spec.bufferValues[1] = geometry.spec.bufferValues[1].map(function(val, i) {
-					return i % 2 ? val * 0.1 : val;
-					return val;
-				})
+				geometry = new CubeGeometry();
+				// geometry.spec.bufferValues[1] = geometry.spec.bufferValues[1].map(function(val, i) {
+				// 	return i % 2 ? val * 0.1 : val;
+				// 	return val;
+				// })
 			}
 
 			else {
@@ -118,10 +119,15 @@ export class Room extends EventEmitter{
 				.setGeometry(geometry)
 				.setBaseColor(material);
 
-			if (modelName === 'walls')
+			if (modelName === 'walls') {
 				mesh.setDrawOptions({
 					side: 'back'
 				});
+
+				meshNode
+					.setProportionalSize(0.8, 0.6, 1)
+					.setAlign(0.1, 0.2, 0.5)
+			}
 		}
 
 		return out;
@@ -130,11 +136,16 @@ export class Room extends EventEmitter{
 
 
 function Screen (node) {
-	this.screenNode = node.addChild();
+	var fidelity = 0.1;
+
+	this.screenNode = node.addChild()
+		.setAlign(0, -0.1, 0)
+		.setProportionalSize(fidelity, fidelity, 0)
+		.setScale(1 / fidelity, 1 / fidelity, 1);
 
 	this.headerNode = node.addChild()
 		.setProportionalSize(1, 0.15, 0)
-		.setAlign(0, 1.1, 0)
+		.setAlign(0, .98, 0)
 
 	this.headerEl = new DOMElement(this.headerNode, {
 		classes: ['stream-header'],
@@ -158,7 +169,9 @@ function Screen (node) {
 
 Screen.prototype.setTwitchStream = function setTwitchStream(streamName) {
 	this.screenEl
-		.setAttribute('src', `http://www.twitch.tv/${streamName}/embed`);
+		// .setAttribute('src', `https://www.youtube.com/embed/5AUdYd1scrM?autoplay=1`)
+		.setAttribute('src', `http://player.twitch.tv/?channel=${streamName}`)
+		.setAttribute('muted');
 
 	this.headerEl
 		.setContent(`twitch.tv/${streamName}`)
