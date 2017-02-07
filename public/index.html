@@ -7,6 +7,7 @@
 
         <link rel="stylesheet" href="./style/main.css">
         <link rel="stylesheet" href="./style/famous.css">
+        <script src= "http://player.twitch.tv/js/embed/v1.js"></script>
     </head>
 
     <body>
@@ -19,7 +20,7 @@
                 <input id="player-name" class="in-shadow">
 
             </div>
-                <center> - AND - </center>                
+                <center> - AND - </center>
             <div>
                 JOIN A ROOM:
                 <input id="room-key" placeholder="some number..." class="in-shadow">
@@ -42,7 +43,7 @@
         </form>
         <div id="alert"></div>
         <div id="help"> Get a new room based on a twitch stream or join a room using a room number.  Need help? Click <a href="https://github.com/redwoodfavorite/twitch-rooms"> here </a> </div>
-
+        <div id="twitch-container"></div>
         <ul id="chat-log">
         </ul>
         <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>

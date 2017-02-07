@@ -1,11 +1,20 @@
 'use strict';
 
-var FamousEngine = require('famous/core/FamousEngine');
-var KeyHandler   = require('./room/inputs/KeyHandler');
-var AssetLoader  = require('./room/helpers/asset-loader');
-var startApp = require('./room/index');
-var handleLogin = require('./login/main');
-var testBrowserCompatability = require('./browserCompatability');
+import KeyHandler from './room/inputs/KeyHandler';
+import startApp from './room/index';
+import handleLogin from './login/main';
+import testBrowserCompatability from './browserCompatability';
+const THREE = require('three');
+
+const renderer = new THREE.WebGLRenderer();
+
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild( renderer.domElement );
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+
+camera.position.z = 1000;
 
 testBrowserCompatability();
 
@@ -14,39 +23,20 @@ testBrowserCompatability();
 */
 
 KeyHandler.init();
-FamousEngine.init();
 
-var updater = {
-	onUpdate: onUpdate
-}
-
-FamousEngine.requestUpdateOnNextTick(updater);
+onUpdate();
 
 function onUpdate () {
 
 	// Update systems
-
+	renderer.render(scene, camera);
 	KeyHandler.update();
 
-	FamousEngine.requestUpdateOnNextTick(updater);
+	requestAnimationFrame(onUpdate);
 }
 
 handleLogin()
-	.then(startApp);
-
-/*
-	Require application code
-*/
-
-AssetLoader.load(
-	{
-		fromURL: [
-			'obj/room-walls-model.json',
-			'obj/room-floor-model.json',
-			'obj/room-screen-model.json',
-			'obj/character-new.json',
-		]
-	}
-)
-	// .then(startApp);
-
+	.then(options => startApp(
+		options,
+		scene
+	));

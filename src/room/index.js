@@ -1,67 +1,34 @@
-import Famous from 'famous/core/FamousEngine';
-import DOMElement from 'famous/dom-renderables/DOMElement';
-import GestureHandler from 'famous/components/GestureHandler';
-import Camera from 'famous/components/Camera';
-import {Character} from './Character';
-import {Player} from './Player';
-import {Room} from './Room';
-import ChatDialogue from './chat/ChatDialogue';
-import ChatLog from './chat/ChatLog';
-import NotificationBox from './chat/NotificationBox';
+const THREE = require('three');
 
-export default function initialize(options) {
-	var ctx = Famous.createScene('body');
-	var socket = io.connect(undefined, { query: `roomID=${options.roomID}&playerName=${options.playerName}` });
+export default function initialize(options, scene) {
 
-	var worldCenterNode = ctx.addChild()
-		.setAlign(0.5, 0.5, 0.0)
-		.setMountPoint(0.5, 0.5, 0.5)
-		.setOrigin(0.5, 0.5, 0.5)
-		.setSizeMode(1, 1, 1)
-		.setAbsoluteSize(5000, 5000, 5000)
-		.setRotation(-Math.PI * 0.2, 0, 0)
+	const geometry = new THREE.BoxGeometry( 200, 200, 200 );
+	const material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+	const mesh = new THREE.Mesh( geometry, material );
 
-	var roomNode = worldCenterNode.addChild()
-		.setAlign(0.5, 1.28, 0.5)
-		.setMountPoint(0.5, 1, 0.5);
+	scene.add( mesh );
 
-	var room         = new Room(roomNode)
+	const socket = io.connect(undefined, {
+		query: `roomID=${options.roomID}&playerName=${options.playerName}`
+	});
 
-	var playersLocal = [];
+	const playersLocal = [];
 
-	socket.on('initialize-player', function(msg) {
-		var notificationBox = new NotificationBox('#help');
-		var chatDialogue = new ChatDialogue('chat-new', msg.player.name, msg.player.color, socket);
-		var chatLog = new ChatLog('#chat-log');
+	console.log(options)
+
+	socket.on('initialize-player', (msg) => {
 
 		/*
 			Initialize player
 		*/
-
-		room.screen.setTwitchStream(msg.stream);
-
-		var playerNode = worldCenterNode.addChild()
-			.setAlign(0.5, 1, 0.7)
-			.setProportionalSize(0.02, 0.02, 0.02)
-			.setMountPoint(0.5, -0.9, 0.5)
-			.setOrigin(0.5, 0.5, 0.5);
-
-		var playerNode2 = playerNode.addChild()
-			.setOrigin(0.5, 0.5, 0.5)
-			.setAlign(0.5, 0.5, 0.5)
-			.setMountPoint(0.5, 0.5, 0.5)
-
-		var player = new Player(playerNode, playerNode2, msg.player, socket);
-			player.on('toggle-chat', () => {
-				chatDialogue.toggle();
-				chatLog.toggle();
-			});
-			player.on('submit-chat', () => {
-				socket.emit('chat-entry', {
-					ID: player.ID,
-					content: chatDialogue.pullValue()
-				});	
-			});
+		const { stream, player } = msg;
+		const options = {
+			width: 854,
+			height: 480,
+			channel: stream,
+		};
+		const videoPlayer = new Twitch.Player('twitch-container', options);
+		videoPlayer.setVolume(0.5);
 
 		playersLocal[player.ID] = player;
 
@@ -69,26 +36,11 @@ export default function initialize(options) {
 			Add player to scene
 		*/
 
-		var cameraNode = playerNode2.addChild()
-			.setAlign(0.5, -2.3, 0.9)
-
-		var camera = new Camera(cameraNode);
-			camera.setDepth(1000);
-
-		var character;
 		socket.on('chat-entry', function(entry) {
-			character = playersLocal[entry.ID];
 
-			if (entry.ID !== player.ID) {
-				character.showComment(entry);
-			}
-
-			chatLog.addComment(entry, character.name, character.color);
 		});
 
 		socket.on('remove-player', function(message) {
-			var removed = playersLocal[message.ID].node;
-			worldCenterNode.removeChild(removed);
 			playersLocal[message.ID] = null;
 		});
 
@@ -98,7 +50,6 @@ export default function initialize(options) {
 
 		socket.on('update-frame', function(players){
 			var i = players.length;
-			var characterNode;
 
 			while (i--) {
 				var target = players[i];
@@ -116,22 +67,15 @@ export default function initialize(options) {
 				*/
 
 				else if (!playersLocal[target.ID]) {
-					characterNode = worldCenterNode.addChild()
-						.setAlign(0.5, 1, 0.7)
-						.setProportionalSize(0.02, 0.02, 0.02)
-						.setMountPoint(0.5, -0.9, 0.5)
-						.setOrigin(0.5, 0.5, 0.5);
-
-					playersLocal[target.ID] = new Character(characterNode, target);
+					// playersLocal[target.ID] = new Character(target);
 				}
 
 				/*
 					Update character
 				*/
 
-
-				playersLocal[target.ID].receive(players[i]);
+				// playersLocal[target.ID].receive(players[i]);
 			}
 		});
-	});	
+	});
 }
